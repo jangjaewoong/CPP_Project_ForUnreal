@@ -10,6 +10,7 @@ std::unique_ptr<Leaderboard> Leaderboard::LeaderBoard_instance = nullptr;
 Leaderboard& Leaderboard::LeaderBoard_GetInstance(){
     if(!LeaderBoard_instance){
         LeaderBoard_instance.reset(new Leaderboard());
+        std::cout << "리더보드 생성!\n";
     }
     return *LeaderBoard_instance;
 }
@@ -33,57 +34,74 @@ void Leaderboard::UpdateScore(std::string name, int scoreToAdd){
         return;
     }
     int oldScore = it->second.GetScore();
-    topScores.erase({oldScore,name});
+    topScores.erase({oldScore, name});
+    
     it->second.AddScore(scoreToAdd);
     int newScore = it->second.GetScore();
-    topScores.insert({newScore,name});
+    
+    topScores.insert({newScore, name});
 }
+
 void Leaderboard::RemovePlayer(std::string name){
     auto it = players.find(name);
-    if(it==players.end()){
-        std::cout<<"해당 이름을 가진 플레이어가 존재하지 않습니다.\n";
+    if(it == players.end()){
+        std::cout << "❌ 해당 이름을 가진 플레이어가 존재하지 않습니다.\n";
         return;
     }
     int score = it->second.GetScore();
     players.erase(it);
-    topScores.erase({score,name});
-    std::cout << name << "을(를) 제거했습니다!\n";
+    topScores.erase({score, name});
+    std::cout << "🗑️  " << name << "을(를) 제거했습니다!\n";
 }
 
 void Leaderboard::DisplayAllPlayers() const {
-    for(auto it = players.begin(); it!= players.end(); it++ ){
-        Player player = it->second;
-        std::cout<<"[이름] :"<<player.GetName()<<"|[레벨] : "<<player.GetLevel()<<"|[점수] :"<<player.GetScore();
+    if(players.empty()) {
+        std::cout << "플레이어가 없습니다.\n";
+        return;
+    }
+    
+    std::cout << "=== 전체 플레이어 (" << players.size() << "명) ===\n";
+    for(auto it = players.begin(); it != players.end(); ++it){
+        const Player& player = it->second;
+        std::cout << "[이름]: " << player.GetName() 
+                  << " | [레벨]: " << player.GetLevel() 
+                  << " | [점수]: " << player.GetScore() << "\n";  // ⭐ \n 추가!
     }
 }
 
 void Leaderboard::DisplayTopN(int n) const {
-    int count = 0;
-    for(auto it = topScores.begin(); it!= topScores.end(); it++ ){
-        if(count == n-1){
-            std::string name = it->second;
-            auto playerit = players.find(name);
-            Player player = playerit->second;
-            std::cout<<"랭킹 "<<n<<"위\n";
-            std::cout<<"[이름] :"<<player.GetName()<<"|[레벨] : "<<player.GetLevel()<<"|[점수] :"<<player.GetScore();
-        }
-        count++;
+    if(topScores.empty()) {
+        std::cout << "플레이어가 없습니다.\n";
+        return;
+    }
+    
+    std::cout << "=== Top " << n << " 리더보드 ===\n";
+    int rank = 1;
+    
+    // ⭐ rbegin()으로 역순 순회 (높은 점수부터)
+    for(auto it = topScores.rbegin(); it != topScores.rend() && rank <= n; ++it) {
+        std::cout << rank << "위: " << it->second 
+                  << " (" << it->first << "점)\n";
+        rank++;
     }
 }
 
-int Leaderboard::GetPlayerRank(std::string name) const{
-    int count = 0;
-    auto it = players.find(name);
-    if(it == players.end()){
+int Leaderboard::GetPlayerRank(std::string name) const {
+    auto playerIt = players.find(name);
+    if(playerIt == players.end()) {
         return -1;
     }
-    int score = it->second.GetScore();
-    for(auto it = topScores.begin(); it!= topScores.end(); it++ ){
-        if(it->first == score){
-            return count;
+    
+    int rank = 1;
+    
+    // ⭐ rbegin()으로 역순 순회
+    for(auto it = topScores.rbegin(); it != topScores.rend(); ++it) {
+        if(it->second == name) {
+            return rank;
         }
-        count++;
+        rank++;
     }
+    
     return -1;
 }
 
