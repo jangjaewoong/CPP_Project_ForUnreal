@@ -130,3 +130,17 @@ bool Character::CheckToBehave() {
     }
     return true;
 }
+
+void Character::TakeOffWeapon(Weapon &weapon){
+    int curAtk = atk;
+    atk -= weapon.GetAtkBonus();
+    std::cout<<weapon.GetName()<<"을(를) 장착 해제했습니다\n";
+    std::cout<<"공격력 : "<<curAtk<<"=>"<<atk<<"\n";
+}
+
+void Character::TakeOffArmor(Armor &armor){
+    int curDef = def;
+    def -= armor.GetDefBonus();
+    std::cout<<armor.GetName()<<"을(를) 장착 해제했습니다\n";
+    std::cout<<"방어력 : "<<curDef<<"=>"<<def<<"\n";
+}

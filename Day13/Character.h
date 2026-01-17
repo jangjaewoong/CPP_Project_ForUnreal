@@ -2,7 +2,7 @@
 #define CHARACTER_H
 #include <iostream>
 #include <memory>
-
+#include "Item.h"
 class Character {
     protected :
         std::string name;
@@ -34,6 +34,8 @@ class Character {
         void Revive();
         void DisplayStatus() const;
         bool CheckToBehave() ;
+        void TakeOffWeapon(Weapon &weapon);
+        void TakeOffArmor(Armor &armor);
 
         std::string GetName() const {return name;};
         int GetLevel() const {return level;};
@@ -48,6 +50,9 @@ class Character {
         int GetAlive() const {return alive;};
         bool GetStunned() const {return isStunned;};
         void SetStunned(bool state) {isStunned = state;};
+        void AddAtk(int amount) {atk += (amount<0)?0:amount;};
+        void AddDef(int amount) {def += (amount<0)?0:amount;};
+    
 };      
 
 #endif
