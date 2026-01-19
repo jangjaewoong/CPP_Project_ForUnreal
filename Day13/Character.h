@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include "Item.h"
+#include "Inventory.h"
 class Character {
     protected :
         std::string name;
@@ -15,6 +16,7 @@ class Character {
         int exp;
         bool alive;
         bool isStunned;
+        Inventory inventory;
     public :
         Character(std::string name, int level);
         virtual ~Character() = default;
@@ -52,7 +54,8 @@ class Character {
         void SetStunned(bool state) {isStunned = state;};
         void AddAtk(int amount) {atk += (amount<0)?0:amount;};
         void AddDef(int amount) {def += (amount<0)?0:amount;};
-    
+        Inventory& GetInventory() { return inventory; }
+        const Inventory& GetInventory() const { return inventory; }
 };      
 
 #endif

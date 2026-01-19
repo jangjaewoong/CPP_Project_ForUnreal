@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Character.h"
 
-Character::Character(std::string name, int level) : name{name}, level{level}, gold{100}, exp{0}, alive{true}, isStunned{false} {
+Character::Character(std::string name, int level) : name{name}, level{level}, gold{100}, exp{0}, alive{true}, isStunned{false}, inventory(20,30) {
     maxHp = 100 + (level - 1) * 20;
     hp = maxHp;
     maxMp = 50 + (level - 1) * 10;
